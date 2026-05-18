@@ -9,6 +9,7 @@ from .commands import CommandHandler
 from .timer import TimerManager
 from .hotkey import GlobalHotkey
 from .listener_window import ListenerWindow
+from .plugin_manager import register_plugins
 
 
 MODEL_PATH = os.path.expanduser(
@@ -29,6 +30,11 @@ class AssistantCore:
         self._listener = None
         self._listener_cooldown = 0
         self._active = True
+        self._init_plugins()
+
+    def _init_plugins(self):
+        api = register_plugins(self.speaker, self.timers, self)
+        self.cmd_handler.set_plugin_api(api)
 
     def open_listener(self):
         GLib.idle_add(self._open_listener)

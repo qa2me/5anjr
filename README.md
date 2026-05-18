@@ -157,7 +157,60 @@ pip3 install --break-system-packages vosk pyaudio speechrecognition pyttsx3 keyb
 
 ---
 
-## Customization
+## Custom Commands (Plugins)
+
+You can add your own voice commands without touching the core code. Create a `.py` file in `assistant/plugins/` and it loads automatically.
+
+### Quick start — keyword matching
+
+Create `assistant/plugins/my_commands.py`:
+
+```python
+PATTERNS = ["hello", "hi", "hey"]
+
+def handle(text, speaker, timers):
+    speaker.say("Hello! This is my custom command.")
+    return True
+```
+
+- `PATTERNS` — list of keywords that trigger your handler
+- `handle(text, speaker, timers)` — called when a keyword matches. Return `True` if handled.
+
+### Advanced — decorator API
+
+For regex matching and more control, use `setup(api)`:
+
+```python
+def setup(api):
+    @api.on_keywords(["good morning", "good evening"])
+    def greet(text, speaker, timers):
+        speaker.say("Good day to you!")
+        return True
+
+    @api.on_regex(r"repeat\s+(.+)")
+    def echo(text, speaker, timers, match):
+        speaker.say(match.group(1))
+        return True
+
+    @api.on_keywords(["screenshot"])
+    def screenshot(text, speaker, timers):
+        import subprocess
+        subprocess.Popen(["gnome-screenshot", "-i"])
+        speaker.say("Opening screenshot tool")
+        return True
+```
+
+### API reference
+
+| Decorator | Arguments | Callback receives |
+|-----------|-----------|-------------------|
+| `@api.on_keywords(list)` | List of keyword strings | `(text, speaker, timers)` |
+| `@api.on_regex(pattern)` | Regex pattern string | `(text, speaker, timers, match)` |
+
+The `speaker` object has `.say(text)` (non-blocking) and `.say_blocking(text)` methods.  
+The `timers` object has `.set_timer(seconds, label)` and `.cancel_timer(id)` methods.
+
+See `assistant/plugins/example.py` and `assistant/plugins/custom_advanced.py` for working examples.
 
 ### Adding applications
 

@@ -9,7 +9,11 @@ class CommandHandler:
         self.speaker = speaker
         self.timers = timer_manager
         self.app_context = app_context
+        self.plugin_api = None
         self.stop_flag = False
+
+    def set_plugin_api(self, api):
+        self.plugin_api = api
 
     def handle(self, text):
         text = text.lower().strip()
@@ -30,6 +34,12 @@ class CommandHandler:
 
         if self._match_volume(text):
             return
+
+        if self.plugin_api:
+            if self.plugin_api.run_keyword_handlers(text):
+                return
+            if self.plugin_api.run_regex_handlers(text):
+                return
 
         self.speaker.say("I didn't understand that command")
 
