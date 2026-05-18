@@ -20,6 +20,12 @@ class CommandHandler:
         if not text:
             return
 
+        if self.plugin_api:
+            if self.plugin_api.run_keyword_handlers(text):
+                return
+            if self.plugin_api.run_regex_handlers(text):
+                return
+
         if self._match_stop(text):
             return
 
@@ -34,12 +40,6 @@ class CommandHandler:
 
         if self._match_volume(text):
             return
-
-        if self.plugin_api:
-            if self.plugin_api.run_keyword_handlers(text):
-                return
-            if self.plugin_api.run_regex_handlers(text):
-                return
 
         self.speaker.say("I didn't understand that command")
 
