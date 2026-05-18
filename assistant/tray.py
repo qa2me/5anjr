@@ -20,6 +20,14 @@ class AppIndicator:
         )
         self.indicator.set_status(AyatanaAppIndicator3.IndicatorStatus.ACTIVE)
 
+        self._cmd_editor = None
+
+    def _get_cmd_editor(self):
+        if self._cmd_editor is None:
+            from .command_editor import CommandEditor
+            self._cmd_editor = CommandEditor()
+        return self._cmd_editor
+
         self._build_menu()
         GLib.timeout_add(2000, self._refresh_timers)
 
@@ -50,6 +58,12 @@ class AppIndicator:
         item_toggle = Gtk.MenuItem(label=toggle_label)
         item_toggle.connect("activate", lambda _: self.on_toggle())
         menu.append(item_toggle)
+
+        menu.append(Gtk.SeparatorMenuItem())
+
+        item_editor = Gtk.MenuItem(label="Edit Commands...")
+        item_editor.connect("activate", lambda _: self._get_cmd_editor().open())
+        menu.append(item_editor)
 
         menu.append(Gtk.SeparatorMenuItem())
 

@@ -157,9 +157,23 @@ pip3 install --break-system-packages vosk pyaudio speechrecognition pyttsx3 keyb
 
 ---
 
-## Custom Commands (Plugins)
+## Custom Commands (No Coding)
 
-You can add your own voice commands without touching the core code. Create a `.py` file in `assistant/plugins/` and it loads automatically.
+The easiest way to add commands — no code required.
+
+Open the **tray menu** → click **"Edit Commands..."** → use the GUI to add your own voice commands.
+
+For each command you set:
+- **When I say...** — the voice phrases (e.g. "open codeforces, launch codeforces")
+- **Do this...** — one or more actions: Open App, Open URL, Speak Response, Run Command, or App + URL
+
+You can chain multiple actions. For example, saying **"open codeforces"** can launch CLion AND open `https://codeforces.com` in your browser.
+
+The editor saves everything to `assistant/user_commands.json` which loads automatically.
+
+## Custom Commands (Advanced — Plugins)
+
+For users who want to code, create a `.py` file in `assistant/plugins/` and it loads automatically.
 
 ### Quick start — keyword matching
 
