@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Linux Assistant
+Comment=Voice assistant with wake word "hey linux"
+Exec=python3 /home/qais/Desktop/MyLinuxAssistance/main.py --show
+Icon=/home/qais/Desktop/MyLinuxAssistance/assets/icon.png
+Terminal=false
+Categories=Utility;Accessibility;
+StartupNotify=true
