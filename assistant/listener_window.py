@@ -7,10 +7,11 @@ import threading
 
 
 class ListenerWindow:
-    def __init__(self, speaker, recognizer, on_text_callback):
+    def __init__(self, speaker, recognizer, on_text_callback, on_edit_commands=None):
         self.speaker = speaker
         self.recognizer = recognizer
         self.on_text = on_text_callback
+        self.on_edit_commands = on_edit_commands
         self._pulse = 0.0
         self._pulse_dir = 1
         self._done = False
@@ -45,6 +46,15 @@ class ListenerWindow:
             color: rgba(255, 255, 255, 0.35);
             font-size: 12px;
         }
+        .cmd-btn {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 4px 10px;
+            font-size: 13px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .cmd-btn:hover { background: rgba(255, 255, 255, 0.18); }
         """
         provider = Gtk.CssProvider()
         provider.load_from_data(css)
@@ -80,6 +90,12 @@ class ListenerWindow:
         self.entry.set_placeholder_text("Type your command or speak...")
         self.entry.connect("activate", self._on_enter)
         entry_box.pack_start(self.entry, True, True, 0)
+
+        cmd_btn = Gtk.Button.new_with_label("+ Cmd")
+        cmd_btn.set_tooltip_text("Add or edit custom commands")
+        cmd_btn.get_style_context().add_class("cmd-btn")
+        cmd_btn.connect("clicked", lambda btn: self._on_edit_commands())
+        entry_box.pack_start(cmd_btn, False, False, 6)
 
         main_box.pack_start(entry_box, False, False, 0)
 
@@ -169,3 +185,7 @@ class ListenerWindow:
         self.entry.set_text(text)
         self.entry.grab_focus()
         self.entry.set_position(-1)
+
+    def _on_edit_commands(self):
+        if self.on_edit_commands:
+            self.on_edit_commands()

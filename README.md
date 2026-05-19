@@ -63,6 +63,7 @@ You can also press **Ctrl+Q** from anywhere on your desktop to trigger the same 
 The listener window shows:
 - A pulsing blue glow animation (like Siri)
 - A text field where you can type your command
+- A **"+ Cmd"** button to instantly open the Command Editor and add custom commands
 - Speech recognition runs simultaneously — voice fills the text automatically
 
 To submit: press **Enter**. To cancel: press **Escape** or click the **X** button.
@@ -110,8 +111,16 @@ The assistant knows common apps by name: firefox, chrome, brave, terminal, calcu
     ├── commands.py          # Command parser and action handlers
     ├── timer.py             # systemd-backed timers with live countdown
     ├── hotkey.py            # Global Ctrl+Q listener
-    ├── listener_window.py   # GTK overlay with glow animation + text input
-    └── tray.py              # GTK system tray indicator with timer display
+    ├── listener_window.py   # GTK overlay with glow animation + text input + Cmd button
+    ├── tray.py              # GTK system tray indicator with timer display
+    ├── command_editor.py    # GUI editor for no-code custom commands
+    ├── plugin_manager.py    # Plugin discovery and decorator API
+    ├── user_commands.json   # JSON store for user-defined commands
+    └── plugins/
+        ├── example.py       # Simple keyword-matching plugin example
+        ├── custom_advanced.py # Decorator-API plugin example
+        ├── user_commands.py # Loads commands from user_commands.json
+        └── codeforces.py    # Plugin: opens CLion + codeforces.com
 ```
 
 ### How it works
@@ -120,7 +129,7 @@ The assistant knows common apps by name: firefox, chrome, brave, terminal, calcu
 
 2. **Global hotkey** (`hotkey.py`) — Uses the `keyboard` library to register **Ctrl+Q** system-wide. Pressing it triggers the same listen flow. Requires the `input` group.
 
-3. **Listener window** (`listener_window.py`) — A floating GTK popup with a Cairo-drawn pulsing glow animation, a text entry field, and a background voice recognition thread. Voice fills the entry, you press Enter to submit.
+3. **Listener window** (`listener_window.py`) — A floating GTK popup with a Cairo-drawn pulsing glow animation, a text entry field, a **"+ Cmd"** button to open the Command Editor, and a background voice recognition thread. Voice fills the entry, you press Enter to submit.
 
 4. **Command dispatch** (`commands.py`) — Text is matched against patterns using keyword matching and regex. Priority order: stop > timer > open app > time > volume.
 
@@ -161,7 +170,7 @@ pip3 install --break-system-packages vosk pyaudio speechrecognition pyttsx3 keyb
 
 The easiest way to add commands — no code required.
 
-Open the **tray menu** → click **"Edit Commands..."** → use the GUI to add your own voice commands.
+Open the **listener window** → click **"+ Cmd"** or right-click the **tray icon** → **"Edit Commands..."** → use the GUI to add your own voice commands.
 
 For each command you set:
 - **When I say...** — the voice phrases (e.g. "open codeforces, launch codeforces")

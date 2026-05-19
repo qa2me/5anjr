@@ -62,8 +62,15 @@ class AssistantCore:
                     self.speaker.say("Say hey linux to wake me up again")
                     self._active = True
 
-        self._listener = ListenerWindow(self.speaker, self.recognizer, on_done)
+        self._listener = ListenerWindow(
+            self.speaker, self.recognizer, on_done,
+            on_edit_commands=self._open_command_editor,
+        )
         self._listener.present()
+
+    def _open_command_editor(self):
+        from .command_editor import open_editor
+        open_editor()
 
     def _listen_and_handle(self):
         if not self._active:
