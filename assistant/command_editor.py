@@ -139,6 +139,7 @@ class CommandEditor:
     def _on_add(self, btn):
         dialog = CommandDialog(self._window)
         dialog.run()
+        self._refresh_store()
 
     def _on_edit(self, btn):
         sel = self._tree.get_selection()
@@ -152,6 +153,7 @@ class CommandEditor:
                 dialog = CommandDialog(self._window, cmd)
                 dialog.run()
                 break
+        self._refresh_store()
 
     def _on_delete(self, btn):
         sel = self._tree.get_selection()
@@ -222,6 +224,8 @@ class CommandDialog:
             self._keywords_entry.set_text(", ".join(existing.get("keywords", [])))
             for action in existing.get("actions", []):
                 self._add_action_row(action)
+
+        self._dialog.show_all()
 
     def _add_action_row(self, action_data=None):
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=4)
